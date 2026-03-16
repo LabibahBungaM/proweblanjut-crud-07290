@@ -8,7 +8,7 @@ $stmt = $pdo->query("SELECT * FROM barang ORDER BY id DESC");
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold text-custom-title">🍃 Inventaris Barang</h2>
-        <p class="text-muted">Kelola stok dengan tampilan yang lebih segar.</p>
+        <p class="text-muted">Kelola stok</p>
     </div>
     <a href="tambah.php" class="btn btn-custom-add shadow-sm">
         + Tambah Barang
