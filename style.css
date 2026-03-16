@@ -1,11 +1,11 @@
-/* Palet Warna Pastel Fresh (Berdasarkan Gambar) */
+
 :root {
-    --color-mint: #ACDBC9;    /* Hijau Mint (Header/Aksen) */
-    --color-cream: #DBEBC2;   /* Krem Hijau Muda (Background Utama) */
-    --color-peach: #FDD2B5;   /* Peach (Aksen/Badge) */
-    --color-coral: #F7A7A6;   /* Coral Muda (Hover/Aksen) */
-    --color-salmon: #F48B94;  /* Salmon/Pink (Tombol Utama) */
-    --color-dark: #4A4A4A;    /* Abu-abu Tua (Teks agar tidak kaku) */
+    --color-mint: #ACDBC9;   
+    --color-cream: #DBEBC2;   
+    --color-peach: #FDD2B5;   
+    --color-coral: #F7A7A6;  
+    --color-salmon: #F48B94;  
+    --color-dark: #4A4A4A;    
     --white: #FFFFFF;
 }
 
@@ -16,12 +16,12 @@ body {
     padding-bottom: 50px;
 }
 
-/* Judul Dashboard */
+
 .text-custom-title {
-    color: #5A8F7B; /* Versi lebih gelap dari mint untuk teks */
+    color: #5A8F7B; 
 }
 
-/* Card Style */
+
 .card {
     border: none;
     border-radius: 20px;
@@ -35,7 +35,7 @@ body {
     font-weight: 600;
 }
 
-/* Tombol +Tambah Barang */
+
 .btn-custom-add {
     background-color: var(--color-salmon);
     color: white;
@@ -53,7 +53,7 @@ body {
     box-shadow: 0 5px 15px rgba(244, 139, 148, 0.4);
 }
 
-/* Tabel Style */
+
 .table thead th {
     background-color: var(--color-mint);
     color: var(--color-dark);
@@ -65,18 +65,17 @@ body {
     background-color: #f8fffb !important;
 }
 
-/* Badge Stok */
+
 .badge-low {
-    background-color: var(--color-salmon); /* Stok dikit = warna tegas */
+    background-color: var(--color-salmon); 
     color: white;
 }
 
 .badge-enough {
-    background-color: var(--color-peach); /* Stok cukup = warna kalem */
+    background-color: var(--color-peach);
     color: var(--color-dark);
 }
 
-/* Harga Satuan */
 .text-price {
     color: #E07A84;
     font-weight: 700;

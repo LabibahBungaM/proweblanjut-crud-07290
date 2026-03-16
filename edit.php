@@ -1,20 +1,17 @@
 <?php
 include 'koneksi.php';
 
-// 1. Ambil ID dari URL
+
 $id = $_GET['id'];
 
-// 2. Ambil data menggunakan PDO Prepared Statement
 $stmt = $pdo->prepare("SELECT * FROM barang WHERE id = ?");
 $stmt->execute([$id]);
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// 3. Jika data tidak ditemukan
 if (!$data) {
     die("Data tidak ditemukan...");
 }
 
-// 4. Panggil Header (Otomatis memanggil tag HTML, CSS, Navbar, dan pembuka Container)
 include 'header.php'; 
 ?>
 
@@ -66,6 +63,6 @@ include 'header.php';
 </div>
 
 <?php 
-// 5. Panggil Footer (Otomatis menutup Container, memanggil JS, dan tag penutup HTML)
+
 include 'footer.php'; 
 ?>

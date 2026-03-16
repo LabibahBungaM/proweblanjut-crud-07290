@@ -1,14 +1,12 @@
 <?php
 $host = "localhost";
-$db   = "db_inventaris"; // Sesuaikan nama database kamu
+$db   = "db_inventaris"; 
 $user = "root";
 $pass = "";
 
 try {
-    // Membuat koneksi PDO
-    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
     
-    // Set error mode ke Exception agar mudah didebug
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
 } catch(PDOException $e) {

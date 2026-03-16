@@ -12,7 +12,7 @@
             setTimeout(function() {
                 var bsAlert = new bootstrap.Alert(alertElement);
                 bsAlert.close();
-                // Membersihkan URL dari status= agar tidak muncul lagi saat di-refresh
+                
                 window.history.replaceState({}, document.title, window.location.pathname);
             }, 2000); 
         }

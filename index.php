@@ -1,8 +1,7 @@
 <?php
 include 'koneksi.php';
-include 'header.php'; // Memanggil bagian atas
+include 'header.php'; 
 
-// Ambil data dari database menggunakan PDO
 $stmt = $pdo->query("SELECT * FROM barang ORDER BY id DESC");
 ?>
 
@@ -88,4 +87,4 @@ $stmt = $pdo->query("SELECT * FROM barang ORDER BY id DESC");
     </div>
 </div>
 
-<?php include 'footer.php'; // Memanggil bagian bawah ?>
+<?php include 'footer.php';  ?>
