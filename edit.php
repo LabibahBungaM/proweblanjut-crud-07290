@@ -4,12 +4,13 @@ include 'koneksi.php';
 // Ambil ID dari URL
 $id = $_GET['id'];
 
-// Ambil data barang berdasarkan ID tersebut
-$query = mysqli_query($koneksi, "SELECT * FROM barang WHERE id = '$id'");
-$data  = mysqli_fetch_assoc($query);
+//  Ambil data menggunakan PDO Prepared Statement
+$stmt = $pdo->prepare("SELECT * FROM barang WHERE id = ?");
+$stmt->execute([$id]);
+$data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Jika data tidak ditemukan
-if (mysqli_num_rows($query) < 1) {
+//  Jika data tidak ditemukan
+if (!$data) {
     die("Data tidak ditemukan...");
 }
 ?>

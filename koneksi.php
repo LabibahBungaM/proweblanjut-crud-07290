@@ -1,18 +1,20 @@
 <?php
-// Konfigurasi Database
-$host     = "localhost";
-$username = "root";
-$password = ""; // Kosongkan jika menggunakan XAMPP default
-$database = "db_inventaris";
+$host = "localhost";
+$db   = "db_inventaris";
+$user = "root";
+$pass = "";
+$charset = 'utf8mb4';
 
-// Perintah untuk mengoneksikan ke database
-$koneksi = mysqli_connect($host, $username, $password, $database);
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
 
-// Cek apakah koneksi berhasil
-if (!$koneksi) {
-    die("Koneksi ke database gagal: " . mysqli_connect_error());
+try {
+     $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (\PDOException $e) {
+     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
-
-// Jika berhasil (opsional, bisa dihapus jika sudah berfungsi)
-// echo "Koneksi Berhasil!"; 
 ?>

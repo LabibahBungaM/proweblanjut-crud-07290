@@ -1,9 +1,9 @@
 <?php
 include 'koneksi.php';
 
-// Ambil data dari database
-$query = "SELECT * FROM barang ORDER BY id DESC";
-$result = mysqli_query($koneksi, $query);
+// Ambil data dari database menggunakan PDO
+// Kita menggunakan query() karena tidak ada input dari user di sini
+$stmt = $pdo->query("SELECT * FROM barang ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
@@ -22,38 +22,38 @@ $result = mysqli_query($koneksi, $query);
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold text-custom-title">🍃 Inventaris Barang</h2>
-            <p class="text-muted">Kelola stok dengan tampilan yang lebih segar.</p>
+            <p class="text-muted">Kelola stok</p>
         </div>
         <a href="tambah.php" class="btn btn-custom-add shadow-sm">
             + Tambah Barang
         </a>
     </div>
+
     <?php if (isset($_GET['status'])) : ?>
-    <?php 
-        // Tentukan warna berdasarkan status
-        $bg_color = ($_GET['status'] == 'hapus-berhasil') ? '#F48B94' : 'var(--color-mint)';
-        $text_color = ($_GET['status'] == 'hapus-berhasil') ? 'white' : 'var(--color-dark)';
-        $icon = ($_GET['status'] == 'hapus-berhasil') ? '🗑️' : '✨';
-    ?>
-    <div id="alert-notif" class="alert fade show border-0 shadow-sm mb-4" role="alert" 
-         style="background-color: <?= $bg_color; ?>; color: <?= $text_color; ?>; border-radius: 15px; transition: opacity 0.5s ease;">
-        <div class="d-flex align-items-center">
-            <span style="font-size: 1.5rem; margin-right: 15px;"><?= $icon; ?></span>
-            <div>
-                <strong class="d-block">
-                    <?= ($_GET['status'] == 'hapus-berhasil') ? 'Terhapus!' : 'Berhasil!'; ?>
-                </strong>
-                <span class="small">
-                    <?php 
-                        if($_GET['status'] == 'hapus-berhasil') echo "Barang telah dikeluarkan dari daftar.";
-                        if($_GET['status'] == 'tambah-sukses') echo "Barang baru telah ditambahkan.";
-                        if($_GET['status'] == 'update-sukses') echo "Perubahan data telah disimpan.";
-                    ?>
-                </span>
+        <?php 
+            $bg_color = ($_GET['status'] == 'hapus-berhasil') ? '#F48B94' : 'var(--color-mint)';
+            $text_color = ($_GET['status'] == 'hapus-berhasil') ? 'white' : 'var(--color-dark)';
+            $icon = ($_GET['status'] == 'hapus-berhasil') ? '🗑️' : '✨';
+        ?>
+        <div id="alert-notif" class="alert fade show border-0 shadow-sm mb-4" role="alert" 
+             style="background-color: <?= $bg_color; ?>; color: <?= $text_color; ?>; border-radius: 15px; transition: opacity 0.5s ease;">
+            <div class="d-flex align-items-center">
+                <span style="font-size: 1.5rem; margin-right: 15px;"><?= $icon; ?></span>
+                <div>
+                    <strong class="d-block">
+                        <?= ($_GET['status'] == 'hapus-berhasil') ? 'Terhapus!' : 'Berhasil!'; ?>
+                    </strong>
+                    <span class="small">
+                        <?php 
+                            if($_GET['status'] == 'hapus-berhasil') echo "Barang telah dikeluarkan dari daftar.";
+                            if($_GET['status'] == 'tambah-sukses') echo "Barang baru telah ditambahkan.";
+                            if($_GET['status'] == 'update-sukses') echo "Perubahan data telah disimpan.";
+                        ?>
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
-<?php endif; ?>
+    <?php endif; ?>
 
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
@@ -70,7 +70,10 @@ $result = mysqli_query($koneksi, $query);
                         </tr>
                     </thead>
                     <tbody>
-                        <?php while($row = mysqli_fetch_assoc($result)) : ?>
+                        <?php 
+                        // PDO fetch loop
+                        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) : 
+                        ?>
                         <tr>
                             <td class="ps-4 text-muted">#<?= $row['id']; ?></td>
                             <td class="fw-semibold"><?= $row['nama_barang']; ?></td>
@@ -90,7 +93,7 @@ $result = mysqli_query($koneksi, $query);
                         </tr>
                         <?php endwhile; ?>
                         
-                        <?php if(mysqli_num_rows($result) == 0) : ?>
+                        <?php if($stmt->rowCount() == 0) : ?>
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">Belum ada koleksi barang di musim ini.</td>
                         </tr>
@@ -101,23 +104,18 @@ $result = mysqli_query($koneksi, $query);
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Tunggu sampai halaman selesai dimuat
     document.addEventListener("DOMContentLoaded", function() {
         var alertElement = document.getElementById('alert-notif');
-        
         if (alertElement) {
-            // Jalankan fungsi setelah 2 detik
             setTimeout(function() {
-                // Gunakan fungsi bawaan Bootstrap untuk menutup alert dengan animasi
                 var bsAlert = new bootstrap.Alert(alertElement);
                 bsAlert.close();
-                
-                // Opsional: Hilangkan parameter status di URL agar saat refresh notif tidak muncul lagi
                 window.history.replaceState({}, document.title, window.location.pathname);
-            }, 1000); 
+            }, 2000); 
         }
     });
 </script>

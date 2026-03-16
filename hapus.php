@@ -1,24 +1,29 @@
 <?php
 include 'koneksi.php';
 
-// 1. Ambil ID (Kode Barang) dari URL
+// 1. Cek apakah ada ID yang dikirim lewat URL
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    try {
+        $id = $_GET['id'];
 
-    // 2. Query untuk menghapus data berdasarkan ID
-    // Karena ID kita sekarang VARCHAR (seperti BRG001), pastikan pakai tanda kutip '$id'
-    $sql = "DELETE FROM barang WHERE id = '$id'";
-    $query = mysqli_query($koneksi, $sql);
+        // 2. Gunakan Prepared Statement untuk menghapus
+        // Sangat aman dari serangan SQL Injection
+        $sql = "DELETE FROM barang WHERE id = ?";
+        $stmt = $pdo->prepare($sql);
+        $execute = $stmt->execute([$id]);
 
-    // 3. Cek apakah berhasil
-    if ($query) {
-        // Alihkan kembali ke index.php dengan status sukses
-        header('Location: index.php?status=hapus-berhasil');
-    } else {
-        echo "Gagal menghapus data: " . mysqli_error($koneksi);
+        // 3. Jika berhasil, arahkan kembali ke index dengan status
+        if ($execute) {
+            header('Location: index.php?status=hapus-berhasil');
+            exit;
+        }
+    } catch (PDOException $e) {
+        // Jika gagal karena masalah database
+        echo "Gagal menghapus data: " . $e->getMessage();
     }
 } else {
-    // Jika mencoba akses langsung tanpa ID
+    // Jika akses file ini tanpa ID, lempar balik ke dashboard
     header('Location: index.php');
+    exit;
 }
 ?>
