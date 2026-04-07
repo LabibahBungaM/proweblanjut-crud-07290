@@ -14,6 +14,19 @@
   <div class="container">
     <a class="navbar-brand fw-bold text-dark" href="index.php">🍃 MyInventory</a>
     
+    <div class="d-flex align-items-center ms-auto">
+        <?php if(isset($_SESSION['username'])) : ?>
+            <span class="me-3 fw-semibold text-dark">
+                Halo, <?= htmlspecialchars($_SESSION['username']); ?>!
+            </span>
+            <a href="logout.php" class="btn btn-sm rounded-pill px-3 shadow-sm fw-bold" 
+               style="background-color: var(--color-salmon); color: white; border: none;" 
+               onclick="return confirm('Yakin ingin keluar dari aplikasi?')">
+               Logout
+            </a>
+        <?php endif; ?>
+    </div>
+    
   </div>
 </nav>
 
