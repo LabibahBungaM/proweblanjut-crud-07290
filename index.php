@@ -1,11 +1,9 @@
 <?php
-
 session_start();
 if (!isset($_SESSION['status']) || $_SESSION['status'] != "login") {
     header("Location: login.php");
     exit;
 }
-
 
 include 'koneksi.php';
 include 'header.php'; 
@@ -56,21 +54,33 @@ $stmt = $pdo->query("SELECT * FROM barang ORDER BY id DESC");
                 <thead>
                     <tr>
                         <th class="ps-4">ID</th>
-                        <th>Nama Barang</th>
+                        <th>Foto</th> <th>Nama Barang</th>
                         <th>Stok</th>
                         <th>Harga Satuan</th>
-                        <th>Tanggal Masuk</th>
-                        <th class="text-center">Aksi</th>
+                        <th>Tanggal Masuk</th> <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php while($row = $stmt->fetch(PDO::FETCH_ASSOC)) : ?>
                     <tr>
-                        <td class="ps-4 text-muted">#<?= $row['id']; ?></td>
-                        <td class="fw-semibold"><?= $row['nama_barang']; ?></td>
+                        <td class="ps-4 text-muted">#<?= htmlspecialchars($row['id']); ?></td>
+                        
+                        <td>
+                            <?php 
+                            // Cek apakah data gambar ada dan tidak kosong
+                            if(isset($row['gambar']) && !empty($row['gambar'])) : 
+                            ?>
+                                <img src="uploads/<?= htmlspecialchars($row['gambar']); ?>" alt="Foto" style="width: 60px; height: 60px; object-fit: cover; border-radius: 10px; border: 1px solid #eee;">
+                            <?php else : ?>
+                                <span class="badge bg-secondary" style="font-size: 10px;">No Image</span>
+                            <?php endif; ?>
+                        </td>
+
+                        <td class="fw-semibold"><?= htmlspecialchars($row['nama_barang']); ?></td>
+                        
                         <td>
                             <span class="badge <?= ($row['jumlah'] < 5) ? 'badge-low' : 'badge-enough'; ?> rounded-pill px-3 py-2">
-                                <?= $row['jumlah']; ?> Unit
+                                <?= htmlspecialchars($row['jumlah']); ?> Unit
                             </span>
                         </td>
                         <td><span class="text-price fw-bold">Rp <?= number_format($row['harga'], 0, ',', '.'); ?></span></td>
@@ -86,8 +96,7 @@ $stmt = $pdo->query("SELECT * FROM barang ORDER BY id DESC");
                     
                     <?php if($stmt->rowCount() == 0) : ?>
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">Belum ada koleksi barang.</td>
-                    </tr>
+                        <td colspan="7" class="text-center py-5 text-muted">Belum ada koleksi barang.</td> </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
