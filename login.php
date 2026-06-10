@@ -2,60 +2,67 @@
 session_start();
 require 'koneksi.php'; 
 
-
+// --- LOGIKA REMEMBER ME (COOKIE) ---
 if (isset($_COOKIE['login_username']) && isset($_COOKIE['login_key'])) {
     $cookie_user = $_COOKIE['login_username'];
     $cookie_key  = $_COOKIE['login_key'];
 
- 
     $stmt_cookie = $pdo->prepare("SELECT username FROM users WHERE username = :username");
     $stmt_cookie->bindParam(':username', $cookie_user);
     $stmt_cookie->execute();
     
-
     if ($stmt_cookie->rowCount() > 0) {
         $row_cookie = $stmt_cookie->fetch(PDO::FETCH_ASSOC);
         
         if ($cookie_key === hash('sha256', $row_cookie['username'])) {
-           
             $_SESSION['username'] = $row_cookie['username'];
             $_SESSION['status']   = "login";
         }
     }
 }
 
-
+// --- JIKA SUDAH LOGIN, LANGSUNG KE INDEX ---
 if (isset($_SESSION['status']) && $_SESSION['status'] == "login") {
     header("Location: index.php");
     exit;
 }
 
+// --- LOGIKA PROSES LOGIN ---
 if (isset($_POST['login'])) {
-    $username = $_POST['username'];
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
 
     try {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username AND password = :password");
+        // a. Ambil data pengguna berdasarkan username saja (JANGAN pakai AND password)
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username");
         $stmt->bindParam(':username', $username);
-        $stmt->bindParam(':password', $password);
         $stmt->execute();
 
+        // Cek apakah username ditemukan di database
         if ($stmt->rowCount() > 0) {
-  
-            $_SESSION['username'] = $username;
-            $_SESSION['status']   = "login";
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-          
-            if (isset($_POST['remember'])) {
+            // b & c. Verifikasi password yang diinput dengan password hash di database
+            if (password_verify($password, $row['password'])) {
                 
-                setcookie('login_username', $username, time() + 604800, "/");
-            
-                setcookie('login_key', hash('sha256', $username), time() + 604800, "/");
-            }
+                // Jika password cocok, set session login
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['status']   = "login";
 
-            header("Location: index.php"); 
-            exit;
+                // Set Cookie jika Remember Me dicentang
+                if (isset($_POST['remember'])) {
+                    setcookie('login_username', $row['username'], time() + 604800, "/");
+                    setcookie('login_key', hash('sha256', $row['username']), time() + 604800, "/");
+                }
+
+                header("Location: index.php"); 
+                exit;
+            } else {
+                // Jika password tidak cocok
+                echo "<script>alert('Username atau Password salah!');</script>";
+            }
         } else {
+            // Jika username tidak ditemukan
             echo "<script>alert('Username atau Password salah!');</script>";
         }
     } catch(PDOException $e) {

@@ -2,9 +2,8 @@
 session_start();
 require 'koneksi.php'; 
 
-
 if (isset($_POST['register'])) {
-    $username = $_POST['username'];
+    $username = trim($_POST['username']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
 
@@ -12,6 +11,7 @@ if (isset($_POST['register'])) {
         echo "<script>alert('Konfirmasi password tidak cocok!');</script>";
     } else {
         try {
+            // 1. Cek apakah username sudah ada
             $stmt_cek = $pdo->prepare("SELECT * FROM users WHERE username = :username");
             $stmt_cek->bindParam(':username', $username);
             $stmt_cek->execute();
@@ -19,9 +19,13 @@ if (isset($_POST['register'])) {
             if ($stmt_cek->rowCount() > 0) {
                 echo "<script>alert('Username sudah terdaftar! Silakan pilih username lain.');</script>";
             } else {
+                // 2. ENKRIPSI PASSWORD DI SINI (Proses Hashing)
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+                // 3. Simpan username dan password yang SUDAH DI-HASH ke database
                 $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (:username, :password)");
                 $stmt->bindParam(':username', $username);
-                $stmt->bindParam(':password', $password);
+                $stmt->bindParam(':password', $hashed_password); // <-- Masukkan yang sudah di-hash
                 
                 if ($stmt->execute()) {
                     echo "<script>
